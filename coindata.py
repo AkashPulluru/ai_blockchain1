@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # Function to fetch Ethereum market data
 def fetch_eth_data():
-    url = 'https://api.coingecko.com/api/v3/coins/ethereum/market_chart'
+    url = 'https://api.coingecko.com/api/v3/coins/hyperliquid/market_chart'
     params = {'vs_currency': 'usd', 'days': '365', 'interval': 'daily'}
     response = requests.get(url, params=params)
     if response.status_code != 200:
