@@ -65,4 +65,4 @@ def gather_chainlink_data(start_block, end_block):
     print('Data saved to chainlink_transaction_data.csv')
 
 # Example usage (specify your block range)
-gather_chainlink_data(start_block=17000000, end_block=17000003)
+gather_chainlink_data(start_block=17000000, end_block=17000004)
