@@ -68,8 +68,9 @@ y_train, y_test = y[:split], y[split:]
 
 # Model and Hyperparameter tuning
 ts_cv = TimeSeriesSplit(n_splits=5)
-model = XGBRegressor(tree_method='hist', random_state=42)
+model = XGBRegressor(tree_method='hist', random_state=None)
 
+#Model paramaters
 param_dist = {
     "n_estimators": np.arange(100, 1001, 100),
     "max_depth": np.arange(3, 11),
