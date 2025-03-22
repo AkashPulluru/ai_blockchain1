@@ -90,7 +90,7 @@ random_search = RandomizedSearchCV(
     cv=ts_cv,
     n_jobs=-1,
     verbose=1,
-    random_state=42
+    random_state=None
 )
 
 random_search.fit(X_train, y_train)
