@@ -1,15 +1,20 @@
 import os
+import re
 from openai import OpenAI
 from dotenv import load_dotenv
 
 # Load variables from .env file
 load_dotenv()
 
-# Initialize the OpenAI client (recommended way from README)
+# Initialize the OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+def sanitize_filename(filename):
+    # Remove illegal characters and replace spaces with underscores
+    filename = re.sub(r'[^\w\-_\. ]', '_', filename)
+    return filename.replace(' ', '_')
+
 def generate_deep_dive(topic):
-    # Use the recommended Chat Completions API structure
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[
@@ -28,11 +33,14 @@ def generate_deep_dive(topic):
         ],
     )
 
-    # Accessing the response as recommended
     return completion.choices[0].message.content
 
 if __name__ == "__main__":
     topic = input("Enter the topic for your deep dive: ")
     deep_dive = generate_deep_dive(topic)
-    print("\nGenerated Deep Dive:\n")
-    print(deep_dive)
+
+    filename = sanitize_filename(topic) + ".txt"
+    with open(filename, 'w', encoding='utf-8') as file:
+        file.write(deep_dive)
+
+    print(f"\nGenerated Deep Dive saved to {filename}\n")
