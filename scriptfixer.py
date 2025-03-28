@@ -16,7 +16,7 @@ def correct_script(script_content, readme_content):
     )
     return response.choices[0].message.content
 
-# Main function to automate corrections up to 5 iterations
+# Main function to automate corrections up to 5 iterations. Pastes number
 def automate_corrections(filename, readme_filename="chatgptreadme.md"):
     with open(filename, "r") as file:
         script_content = file.read()
