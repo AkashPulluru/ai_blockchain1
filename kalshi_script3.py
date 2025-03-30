@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 markets_api_url = "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXMARMAD"
-trades_api_url_template = "https://api.elections.kalshi.com/trade-api/v2/markets/trades?limit=1000&ticker={}"
+trades_api_url_template = "https://api.elections.kalshi.com/trade-api/v2/markets/trades?limit=1000&ticker={}&cursor={}"  # Cursor added
 
 headers = {
     "accept": "application/json",
@@ -13,11 +13,24 @@ def fetch_markets():
     response.raise_for_status()
     return response.json()
 
-def fetch_trades(ticker):
-    url = trades_api_url_template.format(ticker)
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    return response.json().get('trades', [])
+def fetch_all_trades(ticker):
+    all_trades = []
+    cursor = ""
+
+    while True:
+        url = trades_api_url_template.format(ticker, cursor)
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        data = response.json()
+        trades = data.get('trades', [])
+        all_trades.extend(trades)
+
+        cursor = data.get('cursor')
+        if not cursor:
+            break
+
+    return all_trades
 
 def save_to_excel(data, filename):
     df = pd.DataFrame(data)
@@ -36,8 +49,8 @@ def main():
     all_trades = []
     for market in markets:
         ticker = market.get('ticker')
-        print(f"Fetching trades for ticker: {ticker}")
-        trades = fetch_trades(ticker)
+        print(f"Fetching all trades for ticker: {ticker}")
+        trades = fetch_all_trades(ticker)
         for trade in trades:
             trade['market_ticker'] = ticker
         all_trades.extend(trades)
