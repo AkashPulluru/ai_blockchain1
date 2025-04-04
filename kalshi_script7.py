@@ -1,6 +1,6 @@
-
 import requests
 import pandas as pd
+from xlsxwriter import Workbook
 
 markets_api_url_template = "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXMARMAD&limit=1000"
 trades_api_url_template = "https://api.elections.kalshi.com/trade-api/v2/markets/trades?limit=1000&ticker={}"
@@ -25,7 +25,7 @@ def fetch_markets():
         markets = data.get('markets', [])
         all_markets.extend(markets)
 
-        cursor = data.get('next_cursor')
+        cursor = data.get('cursor')
         if not cursor or len(markets) == 0:
             break
 
@@ -47,7 +47,7 @@ def fetch_all_trades(ticker):
         trades = data.get('trades', [])
         all_trades.extend(trades)
 
-        cursor = data.get('next_cursor')
+        cursor = data.get('cursor')
         if not cursor or len(trades) == 0:
             break
 
@@ -62,6 +62,11 @@ def save_to_excel(data, filename, sheet_size=1000000):
             print(f"Data chunk {sheet_name} written successfully.")
 
     print(f"All data successfully saved to {filename}")
+
+def save_to_csv(data, filename):
+    df = pd.DataFrame(data)
+    df.to_csv(filename, index=False)
+    print(f"Data successfully saved to {filename}")
 
 def main():
     series_ticker = 'KXMARMAD'
@@ -84,7 +89,11 @@ def main():
         print("No trades data found.")
         return
 
-    save_to_excel(all_trades, f'{series_ticker}_trades.xlsx')
+    excel_filename = f'{series_ticker}_trades.xlsx'
+    csv_filename = f'{series_ticker}_trades.csv'
+
+    save_to_excel(all_trades, excel_filename)
+    save_to_csv(all_trades, csv_filename)
 
 if __name__ == "__main__":
     main()
