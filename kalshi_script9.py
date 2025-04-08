@@ -61,9 +61,11 @@ def add_fees_columns(trades):
 
         maker_fees = count * 0.0025
         fees = count * 0.01 * yes_price * 0.01 * no_price * 0.07 * 2
+        total_fees = maker_fees + fees
 
         trade['maker_fees'] = maker_fees
         trade['fees'] = fees
+        trade['total_fees'] = total_fees
 
     return trades
 
