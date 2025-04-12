@@ -19,6 +19,9 @@ venv/
 *.sublime-project
 *.sublime-workspace
 
+KXMARMAD_trades.csv
+KXMARMAD_trades.xlsx
+
 # OS specific files
 .DS_Store
 Thumbs.db

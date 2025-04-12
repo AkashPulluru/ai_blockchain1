@@ -68,16 +68,28 @@ def add_fees_columns(trades):
     return trades
 
 def compute_trade_analytics(trades_df):
+    trades_df['yes_weighted'] = trades_df['yes_price'] * trades_df['count']
+    trades_df['no_weighted'] = trades_df['no_price'] * trades_df['count']
+
     analytics = trades_df.groupby('market_ticker').agg(
         total_trades=('count', 'sum'),
-        average_yes_price=('yes_price', 'mean'),
-        average_no_price=('no_price', 'mean'),
+        weighted_yes_price=('yes_weighted', 'sum'),
+        weighted_no_price=('no_weighted', 'sum'),
+        total_count=('count', 'sum'),
         total_maker_fees=('maker_fees', 'sum'),
         total_fees=('fees', 'sum'),
         total_combined_fees=('total_fees', 'sum'),
     ).reset_index()
 
+    # Calculate final weighted averages
+    analytics['average_yes_price'] = analytics['weighted_yes_price'] / analytics['total_count']
+    analytics['average_no_price'] = analytics['weighted_no_price'] / analytics['total_count']
+
+    # Drop intermediate columns if desired
+    analytics = analytics.drop(columns=['weighted_yes_price', 'weighted_no_price', 'total_count'])
+
     return analytics
+
 
 def save_to_excel_with_analytics(data, analytics, filename, sheet_size=1000000):
     with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
