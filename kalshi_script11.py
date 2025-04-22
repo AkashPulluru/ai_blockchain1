@@ -60,12 +60,15 @@ def add_fees_columns(trades):
         maker_fees = count * 0.0025
         fees = count * 0.01 * yes_price * 0.01 * no_price * 0.07 * 2
         total_fees = maker_fees + fees
+        fee_percentage = total_fees / count if count > 0 else 0
 
         trade['maker_fees'] = maker_fees
         trade['fees'] = fees
         trade['total_fees'] = total_fees
+        trade['fee_percentage'] = fee_percentage
 
     return trades
+
 
 def compute_trade_analytics(trades_df):
     trades_df['yes_weighted'] = trades_df['yes_price'] * trades_df['count']
@@ -112,7 +115,7 @@ def save_to_csv(data, filename):
     print(f"Data successfully saved to {filename}")
 
 def main():
-    series_tickers = ['KXNBA', 'KXMASTERS', 'KXUCLROUND']
+    series_tickers = ['KXNBAGAME', 'PRES']
 
     for series_ticker in series_tickers:
         markets = fetch_markets(series_ticker)
