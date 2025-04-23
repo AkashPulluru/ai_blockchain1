@@ -76,6 +76,7 @@ def compute_trade_analytics(trades_df):
 
     analytics = trades_df.groupby('market_ticker').agg(
         total_trades=('count', 'sum'),
+        num_trades=('count', 'count'),  # Total number of individual trades
         weighted_yes_price=('yes_weighted', 'sum'),
         weighted_no_price=('no_weighted', 'sum'),
         total_count=('count', 'sum'),
@@ -87,11 +88,13 @@ def compute_trade_analytics(trades_df):
     # Calculate final weighted averages
     analytics['average_yes_price'] = analytics['weighted_yes_price'] / analytics['total_count']
     analytics['average_no_price'] = analytics['weighted_no_price'] / analytics['total_count']
+    analytics['average_trade_size'] = analytics['total_trades'] / analytics['num_trades']
 
     # Drop intermediate columns if desired
     analytics = analytics.drop(columns=['weighted_yes_price', 'weighted_no_price', 'total_count'])
 
     return analytics
+
 
 
 def save_to_excel_with_analytics(data, analytics, filename, sheet_size=1000000):
