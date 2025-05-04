@@ -128,7 +128,7 @@ def save_to_csv(data, filename):
     print(f"Data successfully saved to {filename}")
 
 def main():
-    series_tickers = ['KXNBAGAME', 'KXNBASERIES']
+    series_tickers = ['KXNBAGAME', 'KXNBASERIES', 'KXNBA']
 
     for series_ticker in series_tickers:
         markets = fetch_markets(series_ticker)
